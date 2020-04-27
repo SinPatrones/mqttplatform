@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -33,9 +34,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 
+app.use(express.static(path.join(__dirname, '../mqttplatformfront/build')));
+
 // RUTAS
 app.use('/', require('./routes/index.routes'));
-
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../mqttplatformfront/build', 'index.html'));
+});
 server.listen(port, () => {
     console.log("Server on port " + port);
 });
